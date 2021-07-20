@@ -292,18 +292,10 @@ namespace HomeWork0716.Forms
         {
             DateTime startDay;
             DateTime endDay;
-            int totalYear = DTPTo.Value.Year - DTPFrom.Value.Year + 1;//共幾年
-            int[] EveryYear = new int[totalYear];//每一年分
-            int[] DsOPrs = new int[totalYear];   //每一區間之天數
-            int[] DsOYs = new int[totalYear];    //每一年天數
-            int[] EYAnswer = new int[totalYear]; //每年應繳稅額
+            textBox1.Text = "";
             int price = PriceYear();
 
-            //計算每一年之年分
-            for (var i = 0; i < totalYear; i++) 
-            {
-                EveryYear[i] = DTPFrom.Value.Year + i;
-            } 
+            
          
 
             //判斷使用者所選計算日期
@@ -312,12 +304,24 @@ namespace HomeWork0716.Forms
                  startDay = DTPFrom.Value;
                  endDay = DTPTo.Value;
             } 
-            else //否則依照當年年頭至年尾計算
+            else //否則依照當年年頭至年尾計算  
             {
                  startDay = new DateTime(DateTime.Now.Year, 1, 1);
                  endDay = new DateTime(DateTime.Now.Year, 12, 31);
+
             }
-            
+           
+            int totalYear = endDay.Year - startDay.Year + 1;//共幾年
+            int[] EveryYear = new int[totalYear];//每一年分
+            int[] DsOPrs = new int[totalYear];   //每一區間之天數
+            int[] DsOYs = new int[totalYear];    //每一年天數
+            int[] EYAnswer = new int[totalYear]; //每年應繳稅額
+
+            //計算每一年之年分
+            for (var i = 0; i < totalYear; i++) 
+            {
+                EveryYear[i] = startDay.Year + i;
+            } 
 
              DateTime[,] period = Period(startDay, endDay);
              DsOPrs = DaysOfEveryPeriod(period);
@@ -353,6 +357,16 @@ namespace HomeWork0716.Forms
             radioBtnM.Checked = false;
         }
         #endregion
+
+        //private void radioBtnY_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if(radioBtnY.Checked == true)
+        //    {
+        //        radioBtnM.Checked = false;
+             
+
+        //    }
+        //}
     }
 }
 
