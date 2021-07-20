@@ -26,6 +26,7 @@ namespace HomeWork0716.Forms
             CreateMotorDic();
             CreateTruckDic();
             CreateSelfCarDic();
+            radioBtnY.Checked = true;
         }
         #endregion
 
@@ -43,6 +44,8 @@ namespace HomeWork0716.Forms
             }
             else
             {
+                DTPFrom.Value = DateTime.Now;
+                DTPTo.Value = DateTime.Now;
                 lblFrom.Visible = false;
                 lblTo.Visible = false;
                 DTPFrom.Visible = false;
@@ -290,60 +293,68 @@ namespace HomeWork0716.Forms
         #region 計算按鈕功能設定
         private void btnCQL_Click(object sender, EventArgs e)
         {
-            DateTime startDay;
-            DateTime endDay;
-            textBox1.Text = "";
-            int price = PriceYear();
 
-            
-         
-
-            //判斷使用者所選計算日期
-            if (radioBtnM.Checked == true)//若使用者按下"依期間"按鈕,則starDay及endDay為使用者所選日期
+            if (CBboxUse.Text == "              ----------請選擇----------" || CBboxCC.Text == "              ----------請選擇----------"
+                || DTPTo.Value<DTPFrom.Value ) 
             {
-                 startDay = DTPFrom.Value;
-                 endDay = DTPTo.Value;
-            } 
-            else //否則依照當年年頭至年尾計算  
-            {
-                 startDay = new DateTime(DateTime.Now.Year, 1, 1);
-                 endDay = new DateTime(DateTime.Now.Year, 12, 31);
-
+                MessageBox.Show("小寶貝請輸入正確訊息!");
             }
+            else
+            {
+                DateTime startDay;
+                DateTime endDay;
+                textBox1.Text = "";
+                int price = PriceYear();
+
+                //判斷使用者所選計算日期
+                if (radioBtnM.Checked == true)//若使用者按下"依期間"按鈕,則starDay及endDay為使用者所選日期
+                {
+                    startDay = DTPFrom.Value;
+                    endDay = DTPTo.Value;
+                }
+                else //否則依照當年年頭至年尾計算  
+                {
+                    
+                    startDay = new DateTime(DateTime.Now.Year, 1, 1);
+                    endDay = new DateTime(DateTime.Now.Year, 12, 31);
+
+                }
+
+                int totalYear = endDay.Year - startDay.Year + 1;//共幾年
+                int[] EveryYear = new int[totalYear];//每一年分
+                int[] DsOPrs = new int[totalYear];   //每一區間之天數
+                int[] DsOYs = new int[totalYear];    //每一年天數
+                int[] EYAnswer = new int[totalYear]; //每年應繳稅額
+
+                //計算每一年之年分
+                for (var i = 0; i < totalYear; i++)
+                {
+                    EveryYear[i] = startDay.Year + i;
+                }
+
+                DateTime[,] period = Period(startDay, endDay);
+                DsOPrs = DaysOfEveryPeriod(period);
+                DsOYs = DaysOfEveryYears(EveryYear);
+                EYAnswer = Answer(price, DsOPrs, DsOYs);
+
+                //計算總應繳稅額
+                int totalPrice = 0;
+                for (int i = 0; i < EYAnswer.Length; i++)
+                {
+                    totalPrice = totalPrice + EYAnswer[i];
+                }
+
+
+                //利用for迴圈顯示TextBox內容
+                for (int i = 0; i < totalYear; i++)
+                {
+                    textBox1.Text += $"使用期間:{period[i, 0]} - {period[i, 1]} {Environment.NewLine}計算天數: {DsOPrs[i]}{Environment.NewLine}" +
+                        $"汽缸CC數: {CBboxCC.SelectedItem}{Environment.NewLine}用途: {CBboxUse.SelectedItem}{Environment.NewLine}計算公式: {price} * {DsOPrs[i]} / {DsOYs[i]} = {EYAnswer[i]}元" +
+                     $"{ Environment.NewLine} 年應納稅額: {EYAnswer[i]}{Environment.NewLine}{Environment.NewLine}";
+                }
+                textBox1.Text += $"總應納稅額: {totalPrice}"; //TextBox內容最後再加上總應繳稅額
+            };
            
-            int totalYear = endDay.Year - startDay.Year + 1;//共幾年
-            int[] EveryYear = new int[totalYear];//每一年分
-            int[] DsOPrs = new int[totalYear];   //每一區間之天數
-            int[] DsOYs = new int[totalYear];    //每一年天數
-            int[] EYAnswer = new int[totalYear]; //每年應繳稅額
-
-            //計算每一年之年分
-            for (var i = 0; i < totalYear; i++) 
-            {
-                EveryYear[i] = startDay.Year + i;
-            } 
-
-             DateTime[,] period = Period(startDay, endDay);
-             DsOPrs = DaysOfEveryPeriod(period);
-             DsOYs = DaysOfEveryYears(EveryYear);
-             EYAnswer = Answer(price, DsOPrs, DsOYs);
-          
-             //計算總應繳稅額
-             int totalPrice = 0;
-             for(int i =0; i<EYAnswer.Length; i++)
-            {
-               totalPrice = totalPrice + EYAnswer[i];
-            }
-             
-
-            //利用for迴圈顯示TextBox內容
-            for (int i = 0; i<totalYear; i++)
-            {
-                textBox1.Text += $"使用期間:{period[i,0]} - {period[i,1]} {Environment.NewLine}計算天數: {DsOPrs[i]}{Environment.NewLine}" +
-                    $"汽缸CC數: {CBboxCC.SelectedItem}{Environment.NewLine}用途: {CBboxUse.SelectedItem}{Environment.NewLine}計算公式: {price} * {DsOPrs[i]} / {DsOYs[i]} = {EYAnswer[i]}元" +
-                 $"{ Environment.NewLine} 年應納稅額: {EYAnswer[i]}{Environment.NewLine}{Environment.NewLine}";
-            }
-            textBox1.Text += $"總應納稅額: {totalPrice}"; //TextBox內容最後再加上總應繳稅額
           
         }
         #endregion
@@ -351,13 +362,18 @@ namespace HomeWork0716.Forms
         #region 清除按鈕功能設定
         private void btnDle_Click(object sender, EventArgs e)
         {
-            
+            CBboxCC.Items.Clear(); //還原預設值
             CBboxUse.Text = "              ----------請選擇----------";
+            
             CBboxCC.Text = "              ----------請選擇----------";
+           
             radioBtnM.Checked = false;//取消點選radioButton
             radioBtnY.Checked = false;//取消點選radioButton
             textBox1.Text = "";//清除textBox內容
-;        }
+
+            DTPFrom.Value = DateTime.Now;
+            DTPTo.Value = DateTime.Now;
+        }
         #endregion
     }
 }
