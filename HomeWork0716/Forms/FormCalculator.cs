@@ -335,7 +335,8 @@ namespace HomeWork0716.Forms
             //利用for迴圈顯示TextBox內容
             for (int i = 0; i<totalYear; i++)
             {
-                textBox1.Text += $"使用期間:{period[i,0]} - {period[i,1]} {Environment.NewLine}計算天數: {DsOPrs[i]}{Environment.NewLine}汽缸CC數: {CBboxCC.SelectedItem}{Environment.NewLine}用途: {CBboxUse.SelectedItem}{Environment.NewLine}計算公式: {price} * {DsOPrs[i]} / {DsOYs[i]} = {EYAnswer[i]}元" +
+                textBox1.Text += $"使用期間:{period[i,0]} - {period[i,1]} {Environment.NewLine}計算天數: {DsOPrs[i]}{Environment.NewLine}" +
+                    $"汽缸CC數: {CBboxCC.SelectedItem}{Environment.NewLine}用途: {CBboxUse.SelectedItem}{Environment.NewLine}計算公式: {price} * {DsOPrs[i]} / {DsOYs[i]} = {EYAnswer[i]}元" +
                  $"{ Environment.NewLine} 年應納稅額: {EYAnswer[i]}{Environment.NewLine}{Environment.NewLine}";
             }
             textBox1.Text += $"總應納稅額: {totalPrice}"; //TextBox內容最後再加上總應繳稅額

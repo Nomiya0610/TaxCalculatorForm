@@ -16,5 +16,10 @@ namespace HomeWork0716.Forms
         {
             InitializeComponent();
         }
+
+        private void FormCMS_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

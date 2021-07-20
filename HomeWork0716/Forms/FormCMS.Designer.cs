@@ -53,6 +53,7 @@ namespace HomeWork0716.Forms
             this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.Name = "FormCMS";
             this.Text = "系統維護中，請稍後再試...";
+            this.Load += new System.EventHandler(this.FormCMS_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
