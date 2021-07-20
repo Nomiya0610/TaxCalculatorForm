@@ -354,19 +354,11 @@ namespace HomeWork0716.Forms
             
             CBboxUse.Text = "              ----------請選擇----------";
             CBboxCC.Text = "              ----------請選擇----------";
-            radioBtnM.Checked = false;
-        }
+            radioBtnM.Checked = false;//取消點選radioButton
+            radioBtnY.Checked = false;//取消點選radioButton
+            textBox1.Text = "";//清除textBox內容
+;        }
         #endregion
-
-        //private void radioBtnY_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    if(radioBtnY.Checked == true)
-        //    {
-        //        radioBtnM.Checked = false;
-             
-
-        //    }
-        //}
     }
 }
 
